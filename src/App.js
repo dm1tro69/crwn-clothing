@@ -7,7 +7,7 @@ import HomePage from "./pages/homepage/homepage.component";
 import ShopPage from "./pages/shop/shop.component";
 import Header from "./components/header/header.component";
 import SignInAndSignUpPage from "./pages/sign-in-and-signup/sign-in-and-signup.component";
-import {auth} from "./firebase/firebase.utils";
+import {auth, createUserProfileDocument} from "./firebase/firebase.utils";
 
 
 function App() {
@@ -17,9 +17,26 @@ function App() {
     let unsubscribeFromAuth = null
 
     useEffect(()=> {
-       unsubscribeFromAuth = auth.onAuthStateChanged(user => {
-            setCurrent(user)
-            console.log(user)
+       unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+           if (userAuth){
+               const userRef = await createUserProfileDocument(userAuth)
+
+               userRef.onSnapshot(snapshot => {
+                   setCurrent({
+                       currentUser: {
+                           id: snapshot.id,
+                           ...snapshot.data()
+                       }
+                   })
+               })
+
+           }else {
+               setCurrent(userAuth)
+           }
+
+
+
+
            return ()=> {
                 unsubscribeFromAuth()
            }
