@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import './App.css';
-import {Switch, Route} from 'react-router-dom'
-import {useDispatch} from "react-redux";
+import {Switch, Route, Redirect} from 'react-router-dom'
+import {useDispatch, useSelector} from "react-redux";
 import {setCurrentUser} from "./redux/user/user.actions";
 
 import "./pages/homepage/homepage.styles.scss"
@@ -15,6 +15,7 @@ import {auth, createUserProfileDocument} from "./firebase/firebase.utils";
 function App() {
 
     const dispatch = useDispatch()
+    const selectorUser = useSelector(state => state.user.currentUser)
 
 
     let unsubscribeFromAuth = null
@@ -49,7 +50,7 @@ function App() {
         <Switch>
             <Route exact path={'/'} component={HomePage}/>
             <Route  path={'/shop'} component={ShopPage}/>
-            <Route  path={'/signin'} component={SignInAndSignUpPage}/>
+            <Route exact path={'/signin'} render={()=> selectorUser ? (<Redirect to={'/'}/>): (<SignInAndSignUpPage/>)}/>
         </Switch>
     </div>
   );

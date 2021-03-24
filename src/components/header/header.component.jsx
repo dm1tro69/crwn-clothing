@@ -1,15 +1,16 @@
 import React from 'react'
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {Link} from 'react-router-dom'
 import './header.styles.scss'
 import {ReactComponent as Logo} from '../../assets/crown.svg'
 import {auth} from "../../firebase/firebase.utils";
+import CartItem from "../cart-icon/cart-item.component";
+import CartDropdown from "../cart-dropdown/cart-dropdown.component";
 
 const Header = () => {
 
-    // const dispatch = useDispatch()
     const currentUser = useSelector(state => state.user.currentUser)
-    console.log(currentUser)
+    const cartHidden = useSelector(state => state.cart.hidden)
 
 return (
 <div className={'header'}>
@@ -25,7 +26,9 @@ return (
                 :
                 <Link className="option" to={'/signin'}>SIGN IN</Link>
         }
+        <CartItem/>
     </div>
+    {cartHidden ? null : <CartDropdown/>}
 </div>
 )
 }
